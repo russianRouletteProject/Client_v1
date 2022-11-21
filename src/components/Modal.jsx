@@ -48,12 +48,12 @@ const ModalView = styled.div`
   height: 600px;
   background-color: white;
   border-radius: 20px;
-  animation: modal-show 0.3s;
+  animation: modal-show 1s;
 
   @keyframes modal-show {
     from {
       opacity: 0;
-      margin-top: 50px;
+      margin-top: 100px;
     }
     to {
       opacity: 1;
