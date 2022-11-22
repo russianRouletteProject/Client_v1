@@ -16,14 +16,11 @@ const Header = () => {
           <div>Russian Roulette</div>
         </HeaderLogo>
         <HeaderNav>
-          {isMain && <button>custom room</button>}
-          {isList && <button>create room</button>}
+          {isMain && <NavButton>custom room</NavButton>}
+          {isList && <NavButton>create room</NavButton>}
         </HeaderNav>
         <HeaderProfile>
           <div>profile</div>
-          <div></div>
-          <div></div>
-          <div></div>
         </HeaderProfile>
       </HeaderBox>
     </>
@@ -43,7 +40,7 @@ const HeaderBox = styled.header`
 
 const HeaderLogo = styled.div`
   display: flex;
-  flex: 0.5;
+  flex: 0.7;
   align-items: center;
   color: white;
   margin-left: 40px;
@@ -68,5 +65,15 @@ const HeaderProfile = styled.div`
   justify-content: flex-end;
   color: white;
   margin-right: 30px;
+`;
+
+const NavButton = styled.button`
+  background-color: transparent;
+  border: none;
+  color: #707070;
+  cursor: pointer;
+  &:hover {
+    filter: drop-shadow(0 0 0.8rem #fff);
+  }
 `;
 export default Header;
