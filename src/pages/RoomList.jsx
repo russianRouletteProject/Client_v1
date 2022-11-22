@@ -21,17 +21,62 @@ const RoomList = () => {
         <RoomListCtn>
           <Header />
           <Contentslayout>
-            <div>
-              {roomlist.map(room => {
+            <RoomListWrap>
+              <RoomListBox>
+                <RoomBox>
+                  <RoomBoxContents>
+                    <RoomInfo>
+                      <div>방번호: 1</div>
+                      <div>마피아 클래식 방입니다</div>
+                    </RoomInfo>
+                    <Personnel>Icon</Personnel>
+                  </RoomBoxContents>
+                </RoomBox>
+                <RoomBox>
+                  <RoomBoxContents>
+                    <RoomInfo>
+                      <div>방번호: 1</div>
+                      <div>마피아 클래식 방입니다</div>
+                    </RoomInfo>
+                    <Personnel>Icon</Personnel>
+                  </RoomBoxContents>
+                </RoomBox>
+                <RoomBox>
+                  <RoomBoxContents>
+                    <RoomInfo>
+                      <div>방번호: 1</div>
+                      <div>마피아 클래식 방입니다</div>
+                    </RoomInfo>
+                    <Personnel>Icon</Personnel>
+                  </RoomBoxContents>
+                </RoomBox>
+                <RoomBox>
+                  <RoomBoxContents>
+                    <RoomInfo>
+                      <div>방번호: 1</div>
+                      <div>마피아 클래식 방입니다</div>
+                    </RoomInfo>
+                    <Personnel>Icon</Personnel>
+                  </RoomBoxContents>
+                </RoomBox>
+                <RoomBox>
+                  <RoomBoxContents>
+                    <RoomInfo>
+                      <div>방번호: 1</div>
+                      <div>마피아 클래식 방입니다</div>
+                    </RoomInfo>
+                    <Personnel>Icon</Personnel>
+                  </RoomBoxContents>
+                </RoomBox>
+              </RoomListBox>
+            </RoomListWrap>
+            {/* {roomlist.map(room => {
                 <div
                 // onClick={#}
                 >
                   <div>room.title</div>
-                  <div>room.title</div>
-                  <div>room.title</div>
                 </div>;
-              })}
-            </div>
+              })} */}
           </Contentslayout>
         </RoomListCtn>
       </Layout>
@@ -45,5 +90,49 @@ const RoomListCtn = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+`;
+const RoomListWrap = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const RoomListBox = styled.div`
+  width: 900px;
+  height: 600px;
+  padding: 20px;
+  border: 1px solid #828282;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  /* justify-content: center; */
+`;
+const RoomBox = styled.div`
+  border: 1px solid #969696;
+  border-radius: 10px;
+  margin: 10px;
+  width: 500px;
+  height: 100px;
+  cursor: pointer;
+`;
+
+const RoomBoxContents = styled.div`
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+`;
+const RoomInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+const Personnel = styled.div`
+  display: flex;
+  align-items: center;
 `;
 export default RoomList;
