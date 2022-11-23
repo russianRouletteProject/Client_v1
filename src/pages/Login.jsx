@@ -110,6 +110,7 @@ const LoginCtn = styled.div`
   height: 768px;
   margin: 0 auto;
   display: flex;
+  position: fixed;
 `;
 
 const WholeBox = styled.div`

@@ -88,6 +88,7 @@ l1104 6 -51 61 c-301 362 -728 592 -1194 643 -118 13 -4564 13 -4675 0z"
 };
 
 const MainRoomCtn = styled.div`
+  position: fixed;
   width: 1024px;
   height: 768px;
   margin: 0 auto;
@@ -162,7 +163,7 @@ const ChattingModalButton = styled.button`
   border: none;
   cursor: pointer;
   position: absolute;
-  right: 150px;
+  left: 1350px;
   bottom: 140px;
   opacity: 0.5;
   transition: opacity 0.5s ease-in-out;

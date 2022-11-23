@@ -36,6 +36,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 ol, ul {
 	list-style: none;
