@@ -85,6 +85,7 @@ const RoomList = () => {
 };
 
 const RoomListCtn = styled.div`
+  position: fixed;
   width: 1024px;
   height: 768px;
   margin: 0 auto;

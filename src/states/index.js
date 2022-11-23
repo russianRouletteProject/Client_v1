@@ -22,5 +22,5 @@ export const headerNicknameState = atom({
 
 export const modalIsOpenState = atom({
   key: 'modalIsOpenState',
-  default: false,
+  default: true,
 });
