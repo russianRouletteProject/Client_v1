@@ -6,15 +6,21 @@ import Header from '../shared/Header';
 import Contentslayout from '../shared/Contentslayout';
 import Layout from '../shared/Layout';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 const RoomList = () => {
+  const { data, status, error } = useQuery(['roomlist'], async () => {
+    await instance.get();
+  });
+
+  if (status === 'loading') {
+    console.log('is Loading');
+  }
+
+  if (status === 'error') {
+    console.log(error.message);
+  }
   const [roomlist, setRoomList] = useRecoilState(roomListState);
-  const getRoomList = async () => {
-    try {
-      const response = await instance.get();
-      console.log('방 목록 조회', response);
-      setRoomList(response.data);
-    } catch (error) {}
-  };
+
   return (
     <>
       <Layout>

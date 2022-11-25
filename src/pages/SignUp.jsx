@@ -1,29 +1,38 @@
 import React, { useRef, useState } from 'react';
-import { signUpBodyState } from '../states';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import mafia from '../assets/img/mafia.jpeg';
 import instance from '../lib/api';
 import { headerNicknameState } from '../states';
 import Layout from '../shared/Layout';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
+
 // 유효성  : 닉네임 4자 이상, 비밀번호 영대/소문자/숫자/특수기호 포함 8자 이상
 const SignUp = () => {
   // useRef 값 참조
   const nicknameRef = useRef();
   const passwordRef = useRef();
   // 유효성 ui
-  const [nickValid, setNickValid] = useState('닉네임을 4자 이상 입력해주세요');
+  const [nickValid, setNickValid] = useState(
+    '닉네임은 4자 이상 12자 이하로 입력해주세요',
+  );
   const [passwordValid, setPasswordValid] = useState(
     '비밀번호는 영대/소문자/숫자/특수기호 포함 8자 이상 입력해주세요',
   );
+  const [passwordValue, setPasswordValue] = useState(null);
+  const [rePasswordValue, setRePasswordValue] = useState('');
+  const [rePasswordValid, setRePasswordValid] =
+    useState('비밀번호가 일치하지 않습니다.');
   const validationNick = e => {
-    if (e.target.value.length < 4) {
-      setNickValid('닉네임을 4자 이상 입력해주세요');
+    if (!(e.target.value.length >= 4 && e.target.value.length <= 12)) {
+      setNickValid('닉네임은 4자 이상 12자 이하로 입력해주세요');
     } else {
       setNickValid('올바른 닉네임 형식입니다.');
     }
   };
   const validationPsw = e => {
+    setPasswordValue(e.target.value);
     if (!reg.test(e.target.value)) {
       setPasswordValid(
         '비밀번호는 영대/소문자/숫자/특수기호 포함 8자 이상 입력해주세요',
@@ -33,48 +42,85 @@ const SignUp = () => {
     }
   };
 
-  //서버통신
-
-  // 닉네임 중복검사
-  const [checkNick, setCheckNick] = useState(false);
-  const [, setHeaderNickname] = useRecoilState(headerNicknameState);
-  const confirmNick = async () => {
-    const nickname = nicknameRef.current.value;
-    await instance
-      .post('/user/checkid', { nickname })
-      .then(response => {
-        // console.log('닉네임 중복검사 response', response);
-        const {
-          data: { msg, nickname, result },
-        } = response;
-        if (result === true) {
-          alert(`${msg}`);
-          setCheckNick(true);
-          setHeaderNickname(nickname);
-        } else if (result === false) {
-          console.log(msg);
-        }
-      })
-      .catch(e => console.log(e));
+  //왜 한개씩 밀려서 입력되는거지?!
+  const checkReWritePsw = e => {
+    setRePasswordValue(e.target.value);
+    console.log(rePasswordValue, passwordValue);
+    if (rePasswordValue === passwordValue) {
+      setRePasswordValid('비밀번호가 일치합니다.');
+    } else {
+      setRePasswordValid('비밀번호가 일치하지 않습니다.');
+    }
   };
 
-  // 전송할 signup body
+  // 닉네임 중복검사
+  const navigate = useNavigate();
+  const [checkNick, setCheckNick] = useState(false);
+  const setHeaderNickname = useSetRecoilState(headerNicknameState);
 
-  // validation :  {
-  //   nickname : '4 - 12자 이내 , 한/영/숫자 모두 가능 , unique',
-  //   password : '영문/숫자/특문 모두 포함, 8 - 20 자 이내'
-  // }
+  const nicknameMutation = useMutation(
+    nickname => {
+      const res = instance.post('/user/checkid', { nickname });
+      return res;
+    },
+    {
+      onSuccess: res => {
+        const {
+          data: { msg, nickname, result },
+        } = res;
+        setCheckNick(result);
+        setHeaderNickname(nickname);
+        if (msg) {
+          alert('사용가능한 닉네임입니다.');
+        }
+      },
+      onError: e => console.log(e),
+    },
+  );
+
+  const fetchNick = () => {
+    if (
+      !(
+        nicknameRef.current.value.length >= 4 &&
+        nicknameRef.current.value.length <= 12
+      )
+    ) {
+      alert('닉네임은 4자 이상 12자 이하로 작성해주세요');
+    } else {
+      const nickname = nicknameRef.current.value;
+      nicknameMutation.mutate(nickname);
+    }
+  };
+  // 회원가입
   const reg =
     /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[~?!@#$%^&*_-]).{8,}$/;
+  const signUpMutation = useMutation(
+    async signUpBody => {
+      const res = await instance.post('/user/signup', signUpBody);
+      return res;
+    },
+    {
+      onSuccess: res => {
+        console.log(res.data);
 
-  const postSignUpBody = async e => {
-    e.preventDefalt();
+        // navigate('/');
+      },
+      onError: error => {
+        console.log(error);
+      },
+      onSettled: () => {
+        console.log('onSettled');
+      },
+    },
+  );
+
+  const onClickSignUpBody = () => {
     if (!checkNick) {
       alert('닉네임 중복검사를 해주세요');
     } else if (
       !(
-        nicknameRef.current.value.length > 4 &&
-        nicknameRef.current.value.length < 12
+        nicknameRef.current.value.length >= 4 &&
+        nicknameRef.current.value.length <= 12
       )
     ) {
       alert('닉네임은 4~12자 이내로 입력해 주세요');
@@ -84,29 +130,13 @@ const SignUp = () => {
       );
     } else {
       const signUpBody = {
-        nickname: `${nicknameRef.current.value}`,
-        password: `${passwordRef.current.value}`,
+        nickname: nicknameRef.current.value,
+        password: passwordRef.current.value,
       };
-      //   console.log('회원가입 body', body);
-
-      try {
-        const response = await instance.post('/user/signup', signUpBody);
-        // const { data: result } = response;
-        alert('회원가입에 성공했습니다.');
-        window.location.replace('/');
-      } catch (error) {
-        console.log(error);
-        console.log(error.response.data.errorMessage);
-        // if (error.status === '1000') {
-        //   // 가입불가 '중복된 아이디'
-        //   console.log(error);
-        // } else if (error.status === '1001') {
-        //   // 가입불가 '닉네임 및 패스워드 유효성 검사 미통과'
-        //   console.log(error);
-        // }
-      }
+      signUpMutation.mutate(signUpBody);
     }
   };
+  // 전송할 signup body
 
   return (
     <>
@@ -133,7 +163,7 @@ const SignUp = () => {
                 ref={nicknameRef}
                 onChange={validationNick}
               />
-              <button onClick={() => confirmNick()}>닉네임 중복검사</button>
+              <button onClick={() => fetchNick()}>닉네임 중복검사</button>
               <ValidationText>{nickValid}</ValidationText>
               <SignUpInput
                 type="password"
@@ -142,7 +172,13 @@ const SignUp = () => {
                 onChange={validationPsw}
               />
               <ValidationText>{passwordValid}</ValidationText>
-              <Button onClick={e => postSignUpBody(e)}>continue</Button>
+              <SignUpInput
+                type="password"
+                placeholder="write your password own more"
+                onChange={checkReWritePsw}
+              />
+              <ValidationText>{rePasswordValid}</ValidationText>
+              <Button onClick={() => onClickSignUpBody()}>continue</Button>
             </SignUpForm>
           </IdenBoxRight>
         </SignUpCtn>
@@ -214,7 +250,7 @@ const SignUpInput = styled.input`
   padding: 2px 10px;
 `;
 
-const SignUpForm = styled.form`
+const SignUpForm = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

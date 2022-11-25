@@ -4,6 +4,7 @@ import mafia from '../assets/img/mafia.jpeg';
 import { useNavigate } from 'react-router-dom';
 import instance from '../lib/api';
 import Layout from '../shared/Layout';
+import { useMutation } from 'react-query';
 // import { Cookies } from 'react-cookie';
 const Login = () => {
   const navigate = useNavigate();
@@ -19,36 +20,35 @@ const Login = () => {
   //   return cookies.get(name);
   // };
   // post login body
-  const postloginBody = async () => {
+  const loginMutation = useMutation(
+    async loginBody => {
+      const res = await instance
+        .post('/user/login', loginBody)
+        .then(res => res.data);
+
+      return res;
+    },
+    {
+      onSuccess: data => {
+        const accessToken = data.token.accessToken;
+        localStorage.setItem('accessToken', accessToken);
+
+        navigate('/roomlist');
+      },
+      onError: e => {
+        console.log(e);
+      },
+      onSettled: () => {
+        console.log('setteld');
+      },
+    },
+  );
+  const loginFetch = () => {
     const loginBody = {
       nickname: nicknameRef.current.value,
       password: passwordRef.current.value,
     };
-    try {
-      const response = await instance.post('/user/login', loginBody);
-      const { data } = response;
-      const { token: _accessToken } = data;
-      const { accessToken } = _accessToken;
-      // console.log(accessToken);
-      localStorage.setItem('accessToken', accessToken);
-      // if (refreshToken) {
-      //   cookies.set('refreshToken', refreshToken);
-      // }
-      navigate('/roomlist');
-      // console.log(response);
-    } catch (error) {
-      console.log(error);
-      // console.log(error.response.data.errorMessage);
-      alert('아이디 또는 패스워드를 확인해주세요');
-      // if (error.status === '1100') {
-      //   // 없는 유저
-      // } else if (error.status === '1101') {
-      //   // 로그인 불가
-      // } else if (error.status === '1102') {
-      //   //권한 제한
-      // }
-      // //추가? : 블랙리스트
-    }
+    loginMutation.mutate(loginBody);
   };
   return (
     <Layout>
@@ -82,7 +82,7 @@ const Login = () => {
               placeholder="write your password"
               ref={passwordRef}
             />
-            <Button onClick={() => postloginBody()}>continue</Button>
+            <Button onClick={() => loginFetch()}>continue</Button>
             <SignUpText>회원이 아니라면?</SignUpText>
             <ButtonFlex>
               <Button

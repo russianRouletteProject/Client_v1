@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import checkImg from '../../assets/img/check.png';
 const VoteModal = ({ mainQues, subQues }) => {
   const navigate = useNavigate();
+  const [isSelect, setIsSelect] = useState(false);
   const voteSubmitHandler = () => {};
-  const [isSelect, setIsSelect] = useState(true);
   return (
     <>
       <ModalOrigin headerName={'mafia kill vote'}>
@@ -19,13 +19,60 @@ const VoteModal = ({ mainQues, subQues }) => {
             <Timer>2 : 59</Timer>
           </VoteText>
           <Options>
-            <Option>
-              user1
-              {isSelect && <CheckImg src={checkImg} />}
+            <Option htmlFor="option" id="option-label">
+              <div>user1</div>
+              {/* label을 붙여놔서 체크하면 ture or false를 반환하게 까지 만들어둠 */}
+              {/* 하지만 체크 여부에 따라 스타일 주는게 안되는중 */}
+              <CheckInput
+                type="checkbox"
+                id="option"
+                onChange={e => {
+                  console.log(e.target.checked);
+                }}
+              />
+              <CheckImg src={checkImg} />
             </Option>
-            <Option>user2</Option>
-            <Option>user3</Option>
-            <Option>user4</Option>
+            <Option htmlFor="option" id="option-label">
+              <div>user1</div>
+              {/* label을 붙여놔서 체크하면 ture or false를 반환하게 까지 만들어둠 */}
+              {/* 하지만 체크 여부에 따라 스타일 주는게 안되는중 */}
+              <CheckInput
+                type="checkbox"
+                id="option"
+                onChange={e => {
+                  console.log(e.target.checked);
+                }}
+              />
+              <CheckImg src={checkImg} />
+            </Option>
+            <Option htmlFor="option" id="option-label">
+              <div>user1</div>
+              {/* label을 붙여놔서 체크하면 ture or false를 반환하게 까지 만들어둠 */}
+              {/* 하지만 체크 여부에 따라 스타일 주는게 안되는중 */}
+              <CheckInput
+                type="checkbox"
+                id="option"
+                onChange={e => {
+                  console.log(e.target.checked);
+                }}
+              />
+              <CheckImg src={checkImg} />
+            </Option>
+
+            <Option htmlFor="option" id="option-label">
+              <div>user1</div>
+              {/* label을 붙여놔서 체크하면 ture or false를 반환하게 까지 만들어둠 */}
+              {/* 하지만 체크 여부에 따라 스타일 주는게 안되는중 */}
+              <CheckInput
+                type="checkbox"
+                id="option"
+                onChange={e => {
+                  console.log(e.target.checked);
+                }}
+              />
+              <CheckImg src={checkImg} />
+            </Option>
+
             <ButtonBlank>
               <DecideButton
                 onClick={e => {
@@ -75,7 +122,8 @@ const Options = styled.form`
   height: 90%;
   position: relative;
 `;
-const Option = styled.div`
+
+const Option = styled.label`
   width: 95%;
   height: 50px;
   background-color: #dbeeff;
@@ -85,16 +133,15 @@ const Option = styled.div`
   border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s;
-  &:hover {
-    border: 3px solid #ada3ff;
-  }
-  &:focus-within {
-    border: 3px solid #ada3ff;
-  }
   position: relative;
+  &:checked + #option-label {
+    border: 2px solid gray;
+  }
 `;
 
+const CheckInput = styled.input`
+  display: none;
+`;
 const CheckImg = styled.img`
   width: 35px;
   position: absolute;
