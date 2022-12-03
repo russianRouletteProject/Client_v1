@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import checkImg from '../../assets/img/check.png';
@@ -7,14 +7,16 @@ import { voteUserState } from '../../states';
 const VoteUser = ({ userName, idx }) => {
   const [isSelect, setIsSelect] = useState(false);
   const [users, setUsers] = useRecoilState(voteUserState);
+
   return (
     <>
       <Options
         onClick={() => {
-          setIsSelect(!isSelect);
-          //   if(users.every(() => )) {
-
-          //   }
+          if (users.every(item => item.isSelect === false)) {
+            console.log('바꿔라 값');
+          } else {
+            console.log('결과가 false');
+          }
         }}>
         <Option htmlFor="option" id="option-label" isSelect={isSelect}>
           <div>{userName}</div>
